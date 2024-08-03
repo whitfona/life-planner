@@ -1,10 +1,7 @@
 <?php
 
 use App\Models\Box;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Symfony\Component\HttpFoundation\Response;
-
-uses(RefreshDatabase::class);
 
 it('can get a box', function () {
     $newBox = Box::factory()->create();

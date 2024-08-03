@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\BoxController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Box;
 
 Route::controller(BoxController::class)->group(function () {
     Route::get('/boxes', 'index');
@@ -10,4 +10,8 @@ Route::controller(BoxController::class)->group(function () {
     Route::post('/boxes', 'store');
     Route::patch('/boxes/{id}', 'update');
     Route::delete('/boxes/{id}', 'destroy');
+});
+
+Route::controller(ItemController::class)->group(function () {
+    Route::get('/items', 'index');
 });
