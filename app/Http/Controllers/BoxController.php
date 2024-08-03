@@ -40,9 +40,7 @@ class BoxController extends Controller
             'location' => 'required|string'
         ]);
 
-        $newBox = Box::create($validated);
-
-        return response()->json($newBox);
+        return response()->json(Box::create($validated));
     }
 
     public function update(Request $request): JsonResponse
