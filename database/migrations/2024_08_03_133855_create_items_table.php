@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('description');
             $table->string('photo_url');
+            $table->foreignId('box_id')->constrained();
             $table->timestamps();
         });
     }

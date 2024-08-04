@@ -3,11 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Item;
+use App\Models\Box;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
- */
 class ItemFactory extends Factory
 {
     public function definition(): array
@@ -15,6 +12,7 @@ class ItemFactory extends Factory
         return [
             'description' => fake()->text(),
             'photo_url' => fake()->slug(),
+            'box_id' => Box::factory(),
         ];
     }
 }

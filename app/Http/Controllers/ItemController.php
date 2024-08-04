@@ -35,6 +35,7 @@ class ItemController extends Controller
     {
         $validated = $request->validate([
             'description' => 'required|string',
+            'box_id' => 'required|integer',
             'photo_url' => 'string'
         ]);
         

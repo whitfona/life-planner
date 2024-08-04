@@ -1,15 +1,16 @@
 <?php
 
 use App\Models\Box;
+use App\Models\Item;
 use Symfony\Component\HttpFoundation\Response;
 
-it('can get a box', function () {
+it('can get a box with no items', function () {
     $newBox = Box::factory()->create();
 
     $response = $this->getJson($this->getBaseBoxUrl());
 
     $response->assertStatus(Response::HTTP_OK)
-        ->assertJson([
+        ->assertExactJson([
             [
                 'id' => $newBox->id,
                 'name' => $newBox->name,
@@ -17,14 +18,15 @@ it('can get a box', function () {
                 'location' => $newBox->location,
                 'created_at' => $newBox->created_at->toISOString(),
                 'updated_at' => $newBox->updated_at->toISOString(),
+                'items' => []
             ]
         ]);
 
     expect(Box::count())->toBe(1);
 });
 
-it('can get boxes', function () {
-    $newBox = Box::factory()->count(3)->create();
+it('can get a boxes with items', function () {
+    $newBox = Box::factory()->count(3)->has(Item::factory()->count(3))->create();
 
     $response = $this->getJson($this->getBaseBoxUrl());
 
@@ -37,6 +39,12 @@ it('can get boxes', function () {
                 'location',
                 'created_at',
                 'updated_at',
+                'items' => [ 
+                    [ 
+                        'description',
+                        'photo_url',
+                    ]
+                ]
             ]
         ]);
 
@@ -53,10 +61,14 @@ it('can get a specific box', function() {
     expect(Box::count())->toBe(3);
 
     $response->assertStatus(Response::HTTP_OK)
-        ->assertJson([
+        ->assertExactJson([
             'id' => $targetBox->id,
             'name' => $targetBox->name,
-            'description' => $targetBox->description
+            'description' => $targetBox->description,
+            'location' => $targetBox->location,
+            'created_at' => $targetBox->created_at,
+            'updated_at' => $targetBox->updated_at,
+            'items' => []
         ]);
 });
 
@@ -74,6 +86,8 @@ it('can search for boxes', function() {
     $boxOne = Box::factory()->create(['name' => 'Can you find me']);
     Box::factory()->create();
     $boxTwo = Box::factory()->create(['description' => 'Did you find me?']);
+
+    expect(Box::count())->toBe(3);
 
     $searchWord = 'find';
     $response = $this->getJson("{$this->getBaseBoxUrl()}?search={$searchWord}");
@@ -151,6 +165,7 @@ it('can update a box', function() {
             'name' => $newBoxData['name'],
             'description' => $newBoxData['description'],
             'location' => $newBoxData['location'],
+            'items' => [],
         ]);
 
     expect (Box::count())->toBe(2);

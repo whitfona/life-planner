@@ -79,6 +79,7 @@ it('can create an item', function () {
         ->assertJson([
             'description' => $newItem->description,
             'photo_url' => $newItem->photo_url,
+            'box_id' => $newItem->box->id
         ]);
 
     expect(Item::count())->toBe(1);
