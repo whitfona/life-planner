@@ -10,7 +10,7 @@ class Item extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['description', 'photo_url', 'box_id'];
 
     public function box(): BelongsTo
     {

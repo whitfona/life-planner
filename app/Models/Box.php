@@ -10,7 +10,7 @@ class Box extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = ['name', 'description', 'location'];
     protected $with = ['items'];
 
     public function items(): HasMany
