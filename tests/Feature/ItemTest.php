@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 it('can get items', function () {
     Item::factory()->count(3)->create();
 
-    $response = $this->getJson('/api/items');
+    $response = $this->getJson($this->getBaseItemUrl());
 
     $response->assertStatus(Response::HTTP_OK)
         ->assertJsonStructure([
@@ -25,7 +25,7 @@ it('can get a specific item', function() {
 
     $targetItem = Item::factory()->create(['description' => 'Target description', 'photo_url' => 'target-photo-url']);
 
-    $response = $this->getJson("/api/items/{$targetItem->id}");
+    $response = $this->getJson("{$this->getBaseItemUrl()}/{$targetItem->id}");
 
     expect(Item::count())->toBe(3);
 
@@ -42,7 +42,7 @@ it('throws an error if an item does not exist', function() {
     
     $nonExistentId = 3;
 
-    $response = $this->getJson("/api/items/{$nonExistentId}");
+    $response = $this->getJson("{$this->getBaseItemUrl()}/{$nonExistentId}");
 
     $response->assertStatus(Response::HTTP_NOT_FOUND);
 });
@@ -53,7 +53,7 @@ it('can search for items', function() {
     $itemTwo = Item::factory()->create(['description' => 'Did you find me?']);
 
     $searchWord = 'find';
-    $response = $this->getJson("/api/items?search={$searchWord}");
+    $response = $this->getJson("{$this->getBaseItemUrl()}?search={$searchWord}");
 
     $response->assertStatus(Response::HTTP_OK)
         ->assertJson([
@@ -73,7 +73,7 @@ it('can search for items', function() {
 it('can create an item', function () {
     $newItem = Item::factory()->make();
 
-    $response = $this->postJson('/api/items', $newItem->toArray());
+    $response = $this->postJson($this->getBaseItemUrl(), $newItem->toArray());
 
     $response->assertStatus(Response::HTTP_OK)
         ->assertJson([
@@ -87,7 +87,7 @@ it('can create an item', function () {
 it('validates when creating a new item', function ($field, $value) {
     $newItem = Item::factory()->make([$field => $value]);
 
-    $response = $this->postJson('/api/items', $newItem->toArray());
+    $response = $this->postJson($this->getBaseItemUrl(), $newItem->toArray());
 
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
         ->assertJsonStructure([
@@ -113,7 +113,7 @@ it('can update an item', function () {
         'photo_url' => 'new-photo-url'
     ];
 
-    $response = $this->patchJson("/api/items/{$item->id}", $newItemData);
+    $response = $this->patchJson("{$this->getBaseItemUrl()}/{$item->id}", $newItemData);
 
     $response->assertStatus(Response::HTTP_OK)
         ->assertJson([
@@ -127,7 +127,7 @@ it('can update an item', function () {
 it('validates when updating an item', function ($field, $value) {
     $item = Item::factory()->create();
 
-    $response = $this->patchJson("/api/items/{$item->id}", [$field => $value]);
+    $response = $this->patchJson("{$this->getBaseItemUrl()}/{$item->id}", [$field => $value]);
 
     $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
         ->assertJsonStructure([
@@ -161,7 +161,7 @@ it('can delete an item', function() {
 
     expect(Item::count())->toBe(2);
 
-    $response = $this->deleteJson("/api/items/{$itemToDelete->id}");
+    $response = $this->deleteJson("{$this->getBaseItemUrl()}/{$itemToDelete->id}");
 
     $response->assertStatus(Response::HTTP_NO_CONTENT);
 
@@ -173,7 +173,7 @@ it('throws an error when deleting an item that does not exist', function() {
     
     $nonExistentId = 3;
 
-    $response = $this->deleteJson("/api/items/{$nonExistentId}");
+    $response = $this->deleteJson("{$this->getBaseItemUrl()}/{$nonExistentId}");
 
     $response->assertStatus(Response::HTTP_NOT_FOUND);
 });
