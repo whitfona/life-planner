@@ -25,15 +25,18 @@ it('can get a specific item', function() {
 
     $targetItem = Item::factory()->create(['description' => 'Target description', 'photo_url' => 'target-photo-url']);
 
-    $response = $this->getJson("{$this->getBaseItemUrl()}/{$targetItem->id}");
-
     expect(Item::count())->toBe(3);
 
+    $response = $this->getJson("{$this->getBaseItemUrl()}/{$targetItem->id}");
+
     $response->assertStatus(Response::HTTP_OK)
-        ->assertJson([
+        ->assertExactJson([
             'id' => $targetItem->id,
             'description' => $targetItem->description,
-            'photo_url' => $targetItem->photo_url
+            'photo_url' => $targetItem->photo_url,
+            'box_id' => $targetItem->box_id,
+            'created_at' => $targetItem->created_at,
+            'updated_at' => $targetItem->updated_at
         ]);
 });
 

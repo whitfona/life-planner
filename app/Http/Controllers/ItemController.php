@@ -23,7 +23,6 @@ class ItemController extends Controller
             ->get();
 
         return response()->json($items);
-        // return response()->json(Item::all());
     }
 
     public function show(int $id): JsonResponse
