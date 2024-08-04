@@ -110,6 +110,27 @@ it('can create a box', function() {
     expect(Box::count())->toBe(1);
 });
 
+it('validates when creating a new box', function ($field, $value) {
+    $newBox = Box::factory()->make([$field => $value]);
+
+    $response = $this->postJson($this->getBaseBoxUrl(), $newBox->toArray());
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJsonStructure([
+            'message',
+            'errors' => [
+                $field
+            ]
+        ]);
+})->with([
+    'name cannot be null' => ['name', null],
+    'name must be a string' => ['name', 1234],
+    'description cannot be null' => ['description', null],
+    'description must be a string' => ['description', 1234],
+    'location cannot be null' => ['location', null],
+    'location must be a string' => ['location', 1234],
+]);
+
 it('can update a box', function() {
     Box::factory()->create();
     $box = Box::factory()->create();
@@ -134,6 +155,27 @@ it('can update a box', function() {
 
     expect (Box::count())->toBe(2);
 });
+
+it('validates when updating a box', function ($field, $value) {
+    $box = Box::factory()->create();
+
+    $response = $this->patchJson("{$this->getBaseBoxUrl()}/{$box->id}", [$field => $value]);
+
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
+        ->assertJsonStructure([
+            'message',
+            'errors' => [
+                $field
+            ]
+        ]);
+})->with([
+    'name cannot be null' => ['name', null],
+    'name must be a string' => ['name', 1234],
+    'description cannot be null' => ['description', null],
+    'description must be a string' => ['description', 1234],
+    'location cannot be null' => ['location', null],
+    'location must be a string' => ['location', 1234],
+]);
 
 it('throws an error when updating a box that does not exist', function() {
     Box::factory()->count(2)->create();
@@ -170,45 +212,3 @@ it('throws an error when deleting a box that does not exist', function() {
 
     $response->assertStatus(Response::HTTP_NOT_FOUND);
 });
-
-it('validates when creating a new box', function ($field, $value) {
-    $newBox = Box::factory()->make([$field => $value]);
-
-    $response = $this->postJson($this->getBaseBoxUrl(), $newBox->toArray());
-
-    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-        ->assertJsonStructure([
-            'message',
-            'errors' => [
-                $field
-            ]
-        ]);
-})->with([
-    'name cannot be null' => ['name', null],
-    'name must be a string' => ['name', 1234],
-    'description cannot be null' => ['description', null],
-    'description must be a string' => ['description', 1234],
-    'location cannot be null' => ['location', null],
-    'location must be a string' => ['location', 1234],
-]);
-
-it('validates when updating a box', function ($field, $value) {
-    $box = Box::factory()->create();
-
-    $response = $this->patchJson("{$this->getBaseBoxUrl()}/{$box->id}", [$field => $value]);
-
-    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY)
-        ->assertJsonStructure([
-            'message',
-            'errors' => [
-                $field
-            ]
-        ]);
-})->with([
-    'name cannot be null' => ['name', null],
-    'name must be a string' => ['name', 1234],
-    'description cannot be null' => ['description', null],
-    'description must be a string' => ['description', 1234],
-    'location cannot be null' => ['location', null],
-    'location must be a string' => ['location', 1234],
-]);

@@ -22,4 +22,18 @@ class ItemController extends Controller
         
         return response()->json(Item::create($validated));
     }
+
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $validated = $request->validate([
+            'description' => 'required|string',
+            'photo_url' => 'string'
+        ]);
+        
+        $updatedItem = Item::findOrFail($id);
+
+        $updatedItem->update($validated);
+        
+        return response()->json($updatedItem);
+    }
 }

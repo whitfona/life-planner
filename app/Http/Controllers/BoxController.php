@@ -43,7 +43,7 @@ class BoxController extends Controller
         return response()->json(Box::create($validated));
     }
 
-    public function update(Request $request): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         $validated = $request->validate([
             'name' => 'sometimes|required|string',
@@ -51,7 +51,7 @@ class BoxController extends Controller
             'location' => 'sometimes|required|string'
         ]);
 
-        $updatedBox = Box::findOrFail($request->id);
+        $updatedBox = Box::findOrFail($id);
 
         $updatedBox->update($validated);
     
