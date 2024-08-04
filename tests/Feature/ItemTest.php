@@ -47,6 +47,29 @@ it('throws an error if an item does not exist', function() {
     $response->assertStatus(Response::HTTP_NOT_FOUND);
 });
 
+it('can search for items', function() {
+    $itemOne = Item::factory()->create(['description' => 'Can you find me']);
+    Item::factory()->create();
+    $itemTwo = Item::factory()->create(['description' => 'Did you find me?']);
+
+    $searchWord = 'find';
+    $response = $this->getJson("/api/items?search={$searchWord}");
+
+    $response->assertStatus(Response::HTTP_OK)
+        ->assertJson([
+            [
+                'id' => $itemOne->id,
+                'description' => $itemOne->description,
+            ],
+            [
+                'id' => $itemTwo->id,
+                'description' => $itemTwo->description,
+            ]
+        ]);
+
+    expect(count($response->json()))->toBe(2);
+});
+
 it('can create an item', function () {
     $newItem = Item::factory()->make();
 

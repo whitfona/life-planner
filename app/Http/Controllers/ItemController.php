@@ -9,9 +9,21 @@ use App\Models\Item;
 
 class ItemController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        return response()->json(Item::all());
+        $searchTerm = $request->query('search');
+
+        $items = Item::query()
+            ->when($searchTerm, function ($query, $searchTerm) {
+                $searchTerm = '%' . $searchTerm . '%';
+                $query->where(function ($query) use ($searchTerm) {
+                    $query->where('description', 'like', $searchTerm);
+                });
+            })
+            ->get();
+
+        return response()->json($items);
+        // return response()->json(Item::all());
     }
 
     public function show(int $id): JsonResponse

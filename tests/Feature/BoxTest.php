@@ -92,7 +92,7 @@ it('can search for boxes', function() {
             ]
         ]);
 
-        expect(count($response->json()))->toBe(2);
+    expect(count($response->json()))->toBe(2);
 });
 
 it('can create a box', function() {
