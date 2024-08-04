@@ -23,7 +23,7 @@ it('can get a box', function () {
     expect(Box::count())->toBe(1);
 });
 
-it('can get multiple boxes', function () {
+it('can get boxes', function () {
     $newBox = Box::factory()->count(3)->create();
 
     $response = $this->getJson($this->getBaseBoxUrl());

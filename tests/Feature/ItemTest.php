@@ -20,20 +20,6 @@ it('can get items', function () {
         ]);
 });
 
-it('can create an item', function () {
-    $newItem = Item::factory()->make();
-
-    $response = $this->postJson('/api/items', $newItem->toArray());
-
-    $response->assertStatus(Response::HTTP_OK)
-        ->assertJson([
-            'description' => $newItem->description,
-            'photo_url' => $newItem->photo_url,
-        ]);
-
-    expect(Item::count())->toBe(1);
-});
-
 it('can get a specific item', function() {
     Item::factory()->count(2)->create();
 
@@ -59,6 +45,20 @@ it('throws an error if an item does not exist', function() {
     $response = $this->getJson("/api/items/{$nonExistentId}");
 
     $response->assertStatus(Response::HTTP_NOT_FOUND);
+});
+
+it('can create an item', function () {
+    $newItem = Item::factory()->make();
+
+    $response = $this->postJson('/api/items', $newItem->toArray());
+
+    $response->assertStatus(Response::HTTP_OK)
+        ->assertJson([
+            'description' => $newItem->description,
+            'photo_url' => $newItem->photo_url,
+        ]);
+
+    expect(Item::count())->toBe(1);
 });
 
 it('validates when creating a new item', function ($field, $value) {
@@ -118,3 +118,16 @@ it('validates when updating an item', function ($field, $value) {
     'description must be a string' => ['description', 1234],
     'photo_url must be a string' => ['photo_url', 1234],
 ]);
+
+it('throws an error when updating an item that does not exist', function() {
+    Item::factory()->count(2)->create();
+    
+    $nonExistentId = 3;
+    $newItemData = [
+        'description' => 'New description'
+    ];
+
+    $response = $this->patchJson("api/items/{$nonExistentId}", $newItemData);
+
+    $response->assertStatus(Response::HTTP_NOT_FOUND);
+});
