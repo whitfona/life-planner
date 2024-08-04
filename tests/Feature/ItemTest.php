@@ -131,3 +131,26 @@ it('throws an error when updating an item that does not exist', function() {
 
     $response->assertStatus(Response::HTTP_NOT_FOUND);
 });
+
+it('can delete an item', function() {
+    Item::factory()->create();
+    $itemToDelete = Item::factory()->create();
+
+    expect(Item::count())->toBe(2);
+
+    $response = $this->deleteJson("/api/items/{$itemToDelete->id}");
+
+    $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+    expect(Item::count())->toBe(1);
+});
+
+it('throws an error when deleting an item that does not exist', function() {
+    Item::factory()->count(2)->create();
+    
+    $nonExistentId = 3;
+
+    $response = $this->deleteJson("/api/items/{$nonExistentId}");
+
+    $response->assertStatus(Response::HTTP_NOT_FOUND);
+});

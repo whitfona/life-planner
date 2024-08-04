@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Item;
 
 class ItemController extends Controller
@@ -40,5 +41,12 @@ class ItemController extends Controller
         $updatedItem->update($validated);
         
         return response()->json($updatedItem);
+    }
+
+    public function destroy(int $id): Response
+    {
+        Item::findOrFail($id)->delete();
+
+        return response()->noContent();
     }
 }

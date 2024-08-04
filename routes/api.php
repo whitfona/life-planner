@@ -17,4 +17,5 @@ Route::controller(ItemController::class)->group(function () {
     Route::get('/items/{id}', 'show');
     Route::post('/items', 'store');
     Route::patch('/items/{id}', 'update');
+    Route::delete('/items/{id}', 'destroy');
 });
