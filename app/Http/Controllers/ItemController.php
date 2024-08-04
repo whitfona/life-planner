@@ -13,6 +13,11 @@ class ItemController extends Controller
         return response()->json(Item::all());
     }
 
+    public function show(int $id): JsonResponse
+    {
+        return response()->json(Item::findOrFail($id));
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([

@@ -14,6 +14,7 @@ Route::controller(BoxController::class)->group(function () {
 
 Route::controller(ItemController::class)->group(function () {
     Route::get('/items', 'index');
+    Route::get('/items/{id}', 'show');
     Route::post('/items', 'store');
     Route::patch('/items/{id}', 'update');
 });

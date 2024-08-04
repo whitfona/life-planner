@@ -34,6 +34,33 @@ it('can create an item', function () {
     expect(Item::count())->toBe(1);
 });
 
+it('can get a specific item', function() {
+    Item::factory()->count(2)->create();
+
+    $targetItem = Item::factory()->create(['description' => 'Target description', 'photo_url' => 'target-photo-url']);
+
+    $response = $this->getJson("/api/items/{$targetItem->id}");
+
+    expect(Item::count())->toBe(3);
+
+    $response->assertStatus(Response::HTTP_OK)
+        ->assertJson([
+            'id' => $targetItem->id,
+            'description' => $targetItem->description,
+            'photo_url' => $targetItem->photo_url
+        ]);
+});
+
+it('throws an error if an item does not exist', function() {
+    Item::factory()->count(2)->create();
+    
+    $nonExistentId = 3;
+
+    $response = $this->getJson("/api/items/{$nonExistentId}");
+
+    $response->assertStatus(Response::HTTP_NOT_FOUND);
+});
+
 it('validates when creating a new item', function ($field, $value) {
     $newItem = Item::factory()->make([$field => $value]);
 
